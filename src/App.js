@@ -1,7 +1,11 @@
 import logo from './logo.svg';
 import './App.css';
-//import { useState } from 'react';
+import { useState } from 'react';
 import KeyBoardGrid from './components/KeyBoardGrid';
+
+
+
+
 
 const TextDisplay = (props) => {
 
@@ -13,12 +17,27 @@ const TextDisplay = (props) => {
 
 
 function App() {
-  const text = "this is a test"
+  
+  const [text, setText] =  useState("");
+
+  const textHandler = (keyObj, keyEvent) => {
+    
+    //key up event -> key is released 
+    if (keyEvent === "KeyUp") {
+      // handle the key up event
+      return; 
+    } 
+    if(keyEvent === "KeyDown") {
+       
+       const newTextValue = text + keyObj.letter.toLowerCase();
+       setText(newTextValue);
+    }
+  }
   return (
     <div className="App">
       <header className="App-header">
        <TextDisplay text={text}/>
-       <KeyBoardGrid/>
+       <KeyBoardGrid textHandler={textHandler} />
       </header>
     </div>
   );

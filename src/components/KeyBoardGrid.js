@@ -1,4 +1,4 @@
-import {useState } from 'react';
+import { useState } from 'react';
 
 //represents a keyboard key
 const KeyBoardKey = (props) => {
@@ -16,7 +16,7 @@ const KeyBoardRow = (props) => {
     return (
         <div className="Keyboard-row">
             {props.keyRow.map((keyObj, index) => {
-                return <KeyBoardKey keyObj={keyObj}/>
+                return <KeyBoardKey keyObj={keyObj} key={index}/>
             })}
         </div>
     )
@@ -25,7 +25,7 @@ const KeyBoardRow = (props) => {
 // represents the whole keyboard 
 const KeyBoardGrid = (props) => {
 
-
+  const { textHandler } = props;
   //keep track of which keys are pressed 
   const keyBoardArr = [
     [
@@ -98,12 +98,64 @@ const KeyBoardGrid = (props) => {
   //handle changes to keyboard 
 
   const handleKeyUp = (event) => {
+     // let's find which key the event happened by 
+     // iterating over the keyboard.  
+     let keyRowsCopy = [...keyRows];
+     keyRowsCopy = keyRowsCopy.map((keyRows) => {
+
+
+          //use map to modify keyboard each key at a time
+          const updatedKeyRow = keyRows.map((keyObj) => {
+            
+              //find letter to modify comparing it to where the event occurred
+              if(event.key.toLowerCase() === keyObj.letter.toLowerCase()){
+                  
+                  //call handler for setting the text 
+                  textHandler(keyObj, "KeyUp");
+                  return {
+                    ...keyObj,
+                    isPressed: false,
+                  }
+              }
+          })
+      //return each updated row 
+      return updatedKeyRow;
+     });
+
+     //update the state 
+     setKeyRows(keyRowsCopy);
 
   }
 
   const handleKeyDown = (event) => {
+    // let's find which key the event happened by 
+    // iterating over the keyboard.  
+    let keyRowsCopy = [...keyRows];
+    keyRowsCopy = keyRowsCopy.map((keyRows) => {
 
-  }
+
+         //use map to modify keyboard each key at a time
+         const updatedKeyRow = keyRows.map((keyObj) => {
+           
+             //find letter to modify comparing it to where the event occurred
+             if(event.key.toLowerCase() === keyObj.letter.toLowerCase()){
+                 
+                 //call handler for setting the text 
+                 textHandler(keyObj, "KeyDown");
+                 return {
+                   ...keyObj,
+                   isPressed: true,
+                 }
+             }
+         })
+     //return each updated row 
+     return updatedKeyRow;
+    });
+
+    //update the state 
+    setKeyRows(keyRowsCopy);
+
+ }
  
   return (
     <div className="Keyboard-grid"
